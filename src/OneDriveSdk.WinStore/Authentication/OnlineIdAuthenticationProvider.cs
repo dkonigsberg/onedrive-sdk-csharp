@@ -23,6 +23,7 @@
 namespace Microsoft.OneDrive.Sdk
 {
     using System;
+    using System.Collections.Generic;
     using System.Linq;
     using System.Threading.Tasks;
     using Windows.Security.Authentication.OnlineId;
@@ -35,7 +36,10 @@ namespace Microsoft.OneDrive.Sdk
             : base(serviceInfo)
         {
             this.authenticator = new OnlineIdAuthenticator();
+            CredentialPrompt = CredentialPromptType.PromptIfNeeded;
         }
+
+        public CredentialPromptType CredentialPrompt { get; set; }
 
         /// <summary>
         /// Signs the current user out.
@@ -63,8 +67,9 @@ namespace Microsoft.OneDrive.Sdk
         {
             try
             {
-                var serviceTicketRequest = new OnlineIdServiceTicketRequest(string.Join(" ", this.ServiceInfo.Scopes), "DELEGATION");
-                var authenticationResponse = await this.authenticator.AuthenticateUserAsync(serviceTicketRequest);
+                var serviceTicketRequests = new List<OnlineIdServiceTicketRequest>();
+                serviceTicketRequests.Add(new OnlineIdServiceTicketRequest(string.Join(" ", this.ServiceInfo.Scopes), "DELEGATION"));
+                var authenticationResponse = await this.authenticator.AuthenticateUserAsync(serviceTicketRequests, CredentialPrompt);
 
                 var ticket = authenticationResponse.Tickets.FirstOrDefault();
 
