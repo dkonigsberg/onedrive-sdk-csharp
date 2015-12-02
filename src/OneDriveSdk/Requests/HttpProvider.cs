@@ -143,12 +143,12 @@ namespace Microsoft.OneDrive.Sdk
 
                     if (error != null && error.Error != null)
                     {
-                        throw new OneDriveException(error.Error);
+                        throw new OneDriveException(error.Error) { HttpHeaders = response.Headers };
                     }
 
                     if (response != null && response.StatusCode == HttpStatusCode.NotFound)
                     {
-                        throw new OneDriveException(new Error { Code = OneDriveErrorCode.ItemNotFound.ToString() });
+                        throw new OneDriveException(new Error { Code = OneDriveErrorCode.ItemNotFound.ToString() }) { HttpHeaders = response.Headers };
                     }
 
                     throw new OneDriveException(

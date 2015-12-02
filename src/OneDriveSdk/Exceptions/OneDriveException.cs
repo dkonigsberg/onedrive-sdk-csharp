@@ -23,6 +23,7 @@
 namespace Microsoft.OneDrive.Sdk
 {
     using System;
+    using System.Net.Http.Headers;
 
     public class OneDriveException : Exception
     {
@@ -33,6 +34,8 @@ namespace Microsoft.OneDrive.Sdk
         }
 
         public Error Error { get; private set; }
+        
+        public HttpResponseHeaders HttpHeaders { get; internal set; }
 
         public bool IsMatch(string errorCode)
         {
